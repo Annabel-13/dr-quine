@@ -1,49 +1,38 @@
+SOURCES1 = Colleen/Colleen.s
+SOURCES2 = Grace/Grace.s
+SOURCES3 = Sully/Sully.s
 
-SRC_PATH = src
-
-SOURCES1 += Colleen/Colleen.s
-SOURCES2 += Grace/Grace.s
-SOURCES3 += Sully/Sully.s
-
-OBJECTS1 = $(SOURCES1:%.s=%.o)
-OBJECTS2 = $(SOURCES2:%.s=%.o)
-OBJECTS3 = $(SOURCES3:%.s=%.o)
-
-NAME = dr_quine_asm
+OBJECTS1 = $(SOURCES1:.s=.o)
+OBJECTS2 = $(SOURCES2:.s=.o)
+OBJECTS3 = $(SOURCES3:.s=.o)
 
 NAME1 = Colleen/Colleen
 NAME2 = Grace/Grace
 NAME3 = Sully/Sully
 
-ASM_CC = nasm
-ASM_FLAGS = -f macho64
-
-CC = gcc
-FLAGS_CC = -Wall -Wextra -Werror
-
+ASM = nasm
+ASM_FLAGS = -f elf64
 
 .PHONY: all clean fclean re
 
-all: $(NAME)
-
-$(NAME): $(NAME1) $(NAME2) $(NAME3)
+all: $(NAME1) $(NAME2) $(NAME3)
 
 $(NAME1): $(OBJECTS1)
-	$(CC) $(FLAGS_CC) -o $@ $^
+	gcc -no-pie -o $@ $^
+
 $(NAME2): $(OBJECTS2)
-	$(CC) $(FLAGS_CC) -o $@ $^
+	gcc -no-pie -o $@ $^
+
 $(NAME3): $(OBJECTS3)
-	$(CC) $(FLAGS_CC) -o $@ $^
+	gcc -no-pie -o $@ $^
 
 %.o: %.s
-	@$(ASM_CC) $(ASM_FLAGS) $< -o $@
+	$(ASM) $(ASM_FLAGS) $< -o $@
 
 clean:
-	@rm -f $(OBJECTS1) $(OBJECTS2) $(OBJECTS3)
-	@echo "ASM Clean \033[33mok\033[0m"
+	rm -f $(OBJECTS1) $(OBJECTS2) $(OBJECTS3)
 
 fclean: clean
-	@rm -f $(NAME1) $(NAME2) $(NAME3)
-	@echo "ASM Fclean \033[33mok\033[0m"
+	rm -f $(NAME1) $(NAME2) $(NAME3)
 
 re: fclean all
